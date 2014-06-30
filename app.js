@@ -19,12 +19,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(function(req, res, next) {
+  console.log(Date(), req.method, req.url);
   var user = basicAuth(req);
-  console.log(Date(), 'authenticate', user.name, user.pass);
   if (user === undefined || user.name !== 'jmf' || user.pass !== '1234') {
+    console.log(Date(), 'auth rejected:', user.name, user.pass);
     res.statusCode = 401;
     res.end('Unauthorized');
   } else {
+    console.log(Date(), 'auth accepted:', user.name, user.pass);
     next();
   }
 });
@@ -36,22 +38,18 @@ var apiUrl = '/api/' + apiVersion;
 // routes
 
 app.get(apiUrl + '/:domain/:user', function(req, res) {
-  console.log(Date(), req.method, req.url);
   res.send(req.method + ' domain: ' + req.params.domain + ' user: ' + req.params.user + '\n');
 });
 
 app.put(apiUrl + '/:domain/:user', function(req, res) {
-  console.log(Date(), req.method, req.url);
   res.send(req.method + ' domain: ' + req.params.domain + ' user: ' + req.params.user + '\n');
 });
 
 app.post(apiUrl + '/:domain/:user', function(req, res) {
-  console.log(Date(), req.method, req.url);
   res.send(req.method + ' domain: ' + req.params.domain + ' user: ' + req.params.user + '\n');
 });
 
 app.delete(apiUrl + '/:domain/:user', function(req, res) {
-  console.log(Date(), req.method, req.url);
   res.send(req.method + ' domain: ' + req.params.domain + ' user: ' + req.params.user + '\n');
 });
 
