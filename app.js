@@ -1,13 +1,65 @@
 // app.js
 
-// $ curl --user jmf:1234 http://<ip>:8080/api/v1/abc/123 -i -b cookies.txt -c cookies.txt -X GET
-// $ curl --user jmf:1234 http://<ip>:8080/api/v1/abc/123 -i -b cookies.txt -c cookies.txt -X PUT
-// $ curl --user jmf:1234 http://<ip>:8080/api/v1/abc/123 -i -b cookies.txt -c cookies.txt -X POST
-// $ curl --user jmf:1234 http://<ip>:8080/api/v1/abc/123 -i -b cookies.txt -c cookies.txt -X DELETE
+// $ curl --user jmf:1234 http://<ip>:<port>/api/v1/abc/123 -i -X GET
+// $ curl --user jmf:1234 http://<ip>:<port>/api/v1/abc/123 -i -X PUT
+// $ curl --user jmf:1234 http://<ip>:<port>/api/v1/abc/123 -i -X POST
+// $ curl --user jmf:1234 http://<ip>:<port>/api/v1/abc/123 -i -X DELETE
 
-var express = require('express');
+var express        = require('express');
+var basicAuth      = require('basic-auth');
+var bodyParser     = require('body-parser');
+var cookieParser   = require('cookie-parser');
 
 var port = process.env.HTTP_PORT || 8080;
+
+var app = express();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+app.use(function(req, res, next) {
+  var user = basicAuth(req);
+  console.log(Date(), 'authenticate', user.name, user.pass);
+  if (user === undefined || user.name !== 'jmf' || user.pass !== '1234') {
+    res.statusCode = 401;
+    res.end('Unauthorized');
+  } else {
+    next();
+  }
+});
+
+var apiVersion = 'v1';
+
+var apiUrl = '/api/' + apiVersion;
+
+// routes
+
+app.get(apiUrl + '/:domain/:user', function(req, res) {
+  console.log(Date(), req.method, req.url);
+  res.send(req.method + ' domain: ' + req.params.domain + ' user: ' + req.params.user + '\n');
+});
+
+app.put(apiUrl + '/:domain/:user', function(req, res) {
+  console.log(Date(), req.method, req.url);
+  res.send(req.method + ' domain: ' + req.params.domain + ' user: ' + req.params.user + '\n');
+});
+
+app.post(apiUrl + '/:domain/:user', function(req, res) {
+  console.log(Date(), req.method, req.url);
+  res.send(req.method + ' domain: ' + req.params.domain + ' user: ' + req.params.user + '\n');
+});
+
+app.delete(apiUrl + '/:domain/:user', function(req, res) {
+  console.log(Date(), req.method, req.url);
+  res.send(req.method + ' domain: ' + req.params.domain + ' user: ' + req.params.user + '\n');
+});
+
+// start server
+
+app.listen(port, function() {
+  console.log(Date(), 'server started port:', port);
+});
 
 ['SIGHUP',  'SIGINT',  'SIGQUIT', 'SIGTRAP',
  'SIGABRT', 'SIGBUS',  'SIGFPE',  'SIGUSR1',
@@ -23,68 +75,3 @@ var port = process.env.HTTP_PORT || 8080;
 process.on('exit', function() {
   console.log(Date(), 'server stopped');
 });
-
-function processRequest(req, res) {
-  console.log(Date(), req.method, req.url);
-  var lastAccess = req.session.lastAccess;
-  req.session.lastAccess = new Date();
-  console.log(Date(), 'prior request was at:', lastAccess);
-  res.cookie('domain', 'info', { expires: new Date(Date.now() + 3600000) });
-}
-
-var app = express();
-
-app.configure('development', function() {
-  console.log(Date(), 'configure: development');
-});
-
-app.configure('production', function() {
-  console.log(Date(), 'configure: production');
-});
-
-var MemStore = express.session.MemoryStore;
-
-app.use(express.static(__dirname + '/public'));
-app.use(express.urlencoded());
-app.use(express.json());
-app.use(express.basicAuth(function(user, password) {
-  console.log(Date(), 'authenticate', user, password);
-  return user == 'jmf' && password == '1234';
-}));
-app.use(express.cookieParser());
-app.use(express.session({ secret: "999", cookie: { maxAge: 3600000 }, store: new MemStore() }));
-
-var apiVersion = 'v1';
-
-var apiUrl = '/api/' + apiVersion;
-
-app.put(apiUrl + '/:domain/:user', function(req, res) {
-  processRequest(req, res);
-  res.send(req.method + ' domain: ' + req.params.domain + ' user: ' + req.params.user + '\n');
-});
-
-app.get(apiUrl + '/:domain/:user', function(req, res) {
-  processRequest(req, res);
-  res.send(req.method + ' domain: ' + req.params.domain + ' user: ' + req.params.user + '\n');
-});
-
-app.post(apiUrl + '/:domain/:user', function(req, res) {
-  processRequest(req, res);
-  res.send(req.method + ' domain: ' + req.params.domain + ' user: ' + req.params.user + '\n');
-});
-
-app.delete(apiUrl + '/:domain/:user', function(req, res) {
-  processRequest(req, res);
-  res.send(req.method + ' domain: ' + req.params.domain + ' user: ' + req.params.user + '\n');
-});
-
-app.get(apiUrl + '*', function(req, res) {
-  processRequest(req, res);
-  res.writeHead(404, { "Content-Type" : "application/json" });
-  res.end(JSON.stringify({"error":"invalid_resource"}) + "\n");
-});
-
-app.listen(port, function() {
-  console.log(Date(), 'server started port:', port);
-});
-
