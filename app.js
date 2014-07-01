@@ -5,6 +5,8 @@
 // $ curl --user jmf:1234 http://<ip>:<port>/api/v1/abc/123 -i -X POST
 // $ curl --user jmf:1234 http://<ip>:<port>/api/v1/abc/123 -i -X DELETE
 
+'use strict';
+
 var express        = require('express');
 var basicAuth      = require('basic-auth');
 var bodyParser     = require('body-parser');
