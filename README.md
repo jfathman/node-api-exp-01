@@ -1,12 +1,10 @@
-## Node.js REST API Experimental Source ##
+## docker-node-api ##
 
-### Description ###
+  Experimental source used for Docker container exploration.
 
-Used for Docker container exploration.
-
-* REST API
-* Express 4
-* Microservices architecture
+  * REST API
+  * Express 4
+  * Microservices architecture
 
 ### Docker ###
 
@@ -21,6 +19,6 @@ Used for Docker container exploration.
     $ curl --user jmf:1234 http://<ip>:<port>/api/v1/abc/123 -i -X POST
     $ curl --user jmf:1234 http://<ip>:<port>/api/v1/abc/123 -i -X DELETE
 
-### Developer ###
+### License ###
 
-* jfathman
+  MIT
