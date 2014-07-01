@@ -23,7 +23,11 @@ app.use(cookieParser());
 app.use(function(req, res, next) {
   console.log(Date(), req.method, req.url);
   var user = basicAuth(req);
-  if (user === undefined || user.name !== 'jmf' || user.pass !== '1234') {
+  if (typeof user === 'undefined' || typeof user.name === 'undefined' || typeof user.pass === 'undefined') {
+    console.log(Date(), 'auth rejected:', 'missing credentials');
+    res.statusCode = 401;
+    res.end('Unauthorized');
+  } else if (user.name !== 'jmf' || user.pass !== '1234') {
     console.log(Date(), 'auth rejected:', user.name, user.pass);
     res.statusCode = 401;
     res.end('Unauthorized');
