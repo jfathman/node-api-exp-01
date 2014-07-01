@@ -7,10 +7,10 @@
 
 'use strict';
 
-var express        = require('express');
-var basicAuth      = require('basic-auth');
-var bodyParser     = require('body-parser');
-var cookieParser   = require('cookie-parser');
+var express      = require('express');
+var basicAuth    = require('basic-auth');
+var bodyParser   = require('body-parser');
+var cookieParser = require('cookie-parser');
 
 var port = process.env.HTTP_PORT || 8080;
 
