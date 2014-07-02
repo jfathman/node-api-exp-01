@@ -8,12 +8,20 @@
 
 ### Docker ###
 
+Build:
+
     $ sudo docker build -t docker-node-api:0.1 .
+
+Run app from bash shell:
 
     $ sudo docker run -i -t --rm -p 8080:8080 -v `pwd`:/src docker-node-api:0.1
     $ node app.js
 
+Run app from invocation:
+
     $ sudo docker run -i -t --rm -p 8080:8080 -v `pwd`:/src docker-node-api:0.1 node app.js
+
+Run multiple app containers with unique port numbers:
 
     $ sudo docker run -i -t --rm -p 8085:8085 -e HTTP_PORT=8085 -v `pwd`:/src docker-node-api:0.1 node app.js
     $ sudo docker run -i -t --rm -p 8086:8086 -e HTTP_PORT=8086 -v `pwd`:/src docker-node-api:0.1 node app.js
