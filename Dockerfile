@@ -15,4 +15,5 @@ RUN   \
 # Set the working directory
 WORKDIR   /src
 
+# Default command
 CMD ["/bin/bash"]

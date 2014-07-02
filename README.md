@@ -9,8 +9,11 @@
 ### Docker ###
 
     $ sudo docker build -t docker-node-api:0.1 .
+
     $ sudo docker run -i -t --rm -p 8080:8080 -v `pwd`:/src docker-node-api:0.1
     $ node app.js
+
+    $ sudo docker run -i -t --rm -p 8080:8080 -v `pwd`:/src docker-node-api:0.1 node app.js
 
 ### Test ###
 
