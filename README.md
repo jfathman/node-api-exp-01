@@ -15,6 +15,9 @@
 
     $ sudo docker run -i -t --rm -p 8080:8080 -v `pwd`:/src docker-node-api:0.1 node app.js
 
+    $ sudo docker run -i -t --rm -p 8085:8085 -e HTTP_PORT=8085 -v `pwd`:/src docker-node-api:0.1 node app.js
+    $ sudo docker run -i -t --rm -p 8086:8086 -e HTTP_PORT=8086 -v `pwd`:/src docker-node-api:0.1 node app.js
+
 ### Test ###
 
     $ curl --user jmf:1234 http://<ip>:<port>/api/v1/abc/123 -i -X GET
